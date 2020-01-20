@@ -12,7 +12,7 @@ class Resource(object):
 
         # Initialize
         self._uid = None
-        self._dist_options = ['uniform', 'normal']
+        self._dist_options = ['uniform', 'normal', 'exponential']
         self._core_list = list()
 
         if not isinstance(num_cores, int):
@@ -90,6 +90,9 @@ class Resource(object):
             else:
                 samples = [spatial_mean for _ in range(self._num_cores)]
             
+        elif self._perf_dist == 'exponential':
+            scale_param = self._dist_mean
+            samples = list(np.random.exponential(scale_param, self._num_cores))
 
         # Create N execution units with the selected samples
         if not self._core_list:
