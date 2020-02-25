@@ -12,7 +12,7 @@ class Resource(object):
 
         # Initialize
         self._uid = None
-        self._dist_options = ['uniform', 'normal', 'exponential']
+        self._dist_options = ['uniform', 'normal', 'exponential', 'poisson']
         self._core_list = list()
 
         if not isinstance(num_cores, int):
@@ -76,7 +76,7 @@ class Resource(object):
             spatial_mean = np.random.uniform(low=self._dist_mean - self._temp_var,
                                              high=self._dist_mean + self._temp_var,
                                              size=1)[0]
-            samples = list(np.random.uniform(low=spatial_mean - self._spat_var,
+            self._samples = list(np.random.uniform(low=spatial_mean - self._spat_var,
                                         high=spatial_mean + self._spat_var,
                                         size=self._num_cores))
         elif self._perf_dist == 'normal':
@@ -86,21 +86,25 @@ class Resource(object):
                 spatial_mean = self._dist_mean
 
             if self._spat_var:
-                samples = list(np.random.normal(spatial_mean, self._spat_var, self._num_cores))
+                self._samples = list(np.random.normal(spatial_mean, self._spat_var, self._num_cores))
             else:
-                samples = [spatial_mean for _ in range(self._num_cores)]
+                self._samples = [spatial_mean for _ in range(self._num_cores)]
             
         elif self._perf_dist == 'exponential':
             scale_param = self._dist_mean
-            samples = list(np.random.exponential(scale_param, self._num_cores))
+            self._samples = list(np.random.exponential(scale_param, self._num_cores))
+        
+        elif self._perf_dist == 'poisson':
+            scale_param = self._dist_mean
+            self._samples = list(np.random.poisson(scale_param, self._num_cores))
 
         # Create N execution units with the selected samples
         if not self._core_list:
-            self._core_list = [Core(abs(samples[i]))
+            self._core_list = [Core(abs(self._samples[i]))
                                for i in range(self._num_cores)]
         elif self._temp_var:
             for ind, core in enumerate(self._core_list):
-                core.perf = abs(samples[ind])
+                core.perf = abs(self._samples[ind])
 
     def to_dict(self):
 

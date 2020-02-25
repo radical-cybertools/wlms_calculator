@@ -147,7 +147,18 @@ class WLMS(object):
 
                     if not self._early_binding or (self._resource.uid not in resource_visited):
                         self._resource.create_core_list()
+
+                        res_as_dict = self._resource.to_dict()
                         self._logger.info("Resource core list created")
+                        #self._logger.info('from resource: num_cores=%s' % res_as_dict['num_cores'] )
+                        #self._logger.info('from resource: uid=%s' % res_as_dict['uid'] )
+                        #self._logger.info('from resource: perf_dist=%s' % res_as_dict['perf_dist'] )
+                        #self._logger.info('from resource: dist_mean=%s' % res_as_dict['dist_mean'] )
+                        #self._logger.info('from resource: temp_var=%s' % res_as_dict['temp_var'] )
+                        #self._logger.info('from resource: spat_var=%s' % res_as_dict['spat_var'] )
+                        #self._logger.info('from resource: core_list=%s' % res_as_dict['core_list']  )
+                        self._logger.info('from resource: samples=%s' % self._resource._samples)
+
                         if self._resource.uid not in resource_visited:
                             resource_visited.append(self._resource.uid)
 

@@ -72,6 +72,13 @@ class Engine(object):
 
         wl_as_dict = workload.to_dict()
         wl_as_dict['submit_time'] = submit_at
+        #self._logger.info('from workload: num_tasks=%s' % wl_as_dict['num_tasks'] )
+        #self._logger.info('from workload: uid=%s' % wl_as_dict['uid'] )
+        #self._logger.info('from workload: ops_dist=%s' % wl_as_dict['ops_dist'] )
+        #self._logger.info('from workload: dist_mean=%s' % wl_as_dict['dist_mean'] )
+        #self._logger.info('from workload: dist_var=%s' % wl_as_dict['dist_var'] )
+        #self._logger.info('from workload: task_list=%s' % wl_as_dict['task_list'] )
+        self._logger.info('from workload: samples=%s' % workload._samples)
 
         conn = pika.BlockingConnection(
             pika.ConnectionParameters(host=self._host, port=self._port))
