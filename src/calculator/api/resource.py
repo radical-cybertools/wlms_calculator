@@ -7,7 +7,7 @@ from ..exceptions import CalcTypeError
 class Resource(object):
 
     def __init__(self, num_cores=1, perf_dist='uniform',
-                 dist_mean=10, temporal_var=0, spatial_var=0,
+                 dist_mean=10, temporal_var=0, spatial_var=0, num_gen=8,
                  no_uid=False):
 
         # Initialize
@@ -53,6 +53,7 @@ class Resource(object):
         self._dist_mean = dist_mean
         self._temp_var = temporal_var
         self._spat_var = spatial_var
+        self._num_gen = num_gen
 
         if not no_uid:
             self._uid = ru.generate_id('resource')
@@ -75,10 +76,23 @@ class Resource(object):
         if self._perf_dist == 'uniform':
             spatial_mean = np.random.uniform(low=self._dist_mean - self._temp_var,
                                              high=self._dist_mean + self._temp_var,
-                                             size=1)[0]
-            self._samples = list(np.random.uniform(low=spatial_mean - self._spat_var,
-                                        high=spatial_mean + self._spat_var,
-                                        size=self._num_cores))
+                                             size=self._num_cores)
+            self._samples = list()
+            for i in range(self._num_cores):
+                self._samples.append(np.random.uniform(low=spatial_mean[i] - self._spat_var,
+                                    high=spatial_mean[i] + self._spat_var,
+                                    size=self._num_cores)[0])
+            print 'samples: ', self._samples
+        #if self._perf_dist == 'uniform':
+        #    spatial_mean = np.random.uniform(low=self._dist_mean - self._temp_var,
+        #                                     high=self._dist_mean + self._temp_var,
+        #                                     size=1)[0]
+        #    for i in range(self._num_cores):
+        #        self._samples = list(np.random.uniform(low=spatial_mean - self._spat_var,
+        #                            high=spatial_mean + self._spat_var,
+        #                            size=self._num_cores))
+        #    print 'samples: ', self._samples
+
         elif self._perf_dist == 'normal':
             if self._temp_var:
                 spatial_mean = np.random.normal(self._dist_mean,self._temp_var,1)[0]
