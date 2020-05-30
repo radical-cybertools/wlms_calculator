@@ -124,8 +124,8 @@ class WLMS(object):
 
             while True:
 
-                method_frame, header_frame, wl = chan.basic_get(queue=self._wl_queue,
-                                                                no_ack=True)
+                method_frame, header_frame, wl = chan.basic_get(queue=self._wl_queue) #,
+                                                               # no_ack=True)
                 if wl and not self._workload:
                     wl_as_dict = json.loads(wl)
                     submit_time = wl_as_dict.pop('submit_time')
@@ -135,8 +135,8 @@ class WLMS(object):
                     self._logger.info('Workload %s received' %
                                       self._workload.uid)
 
-                method_frame, header_frame, res = chan.basic_get(queue=self._res_queue,
-                                                                 no_ack=True)
+                method_frame, header_frame, res = chan.basic_get(queue=self._res_queue) #,
+                                                                # no_ack=True)
                 if res:
                     self._resource = Resource(no_uid=True)
                     self._resource.from_dict(json.loads(res))
@@ -228,8 +228,8 @@ class WLMS(object):
                     cores = None
 
                     while not cores:
-                        method_frame, header_frame, cores = chan.basic_get(queue=self._exec_queue,
-                                                                        no_ack=True)
+                        method_frame, header_frame, cores = chan.basic_get(queue=self._exec_queue) #,
+                                                                        #no_ack=True)
 
                     self._logger.info('Received updates cores')
                     cores_as_dict = json.loads(cores)

@@ -68,8 +68,8 @@ class Executor(object):
 
             while True:
 
-                method_frame, header_frame, cfg_msg = chan.basic_get(queue=self._queue_cfg,
-                                                                 no_ack=True)
+                method_frame, header_frame, cfg_msg = chan.basic_get(queue=self._queue_cfg) #,
+                                                                # no_ack=True)
                 if cfg_msg:
 
                     tasks = list()
@@ -80,8 +80,8 @@ class Executor(object):
 
                     self._logger.info('Engine uid received')
 
-                method_frame, header_frame, schedule = chan.basic_get(queue=self._queue_schedule,
-                                                                      no_ack=True)
+                method_frame, header_frame, schedule = chan.basic_get(queue=self._queue_schedule) # ,
+                                                                      #no_ack=True)
                 if schedule:
 
                     tasks = list()
