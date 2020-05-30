@@ -83,34 +83,43 @@ class Resource(object):
                                     high=spatial_mean[i] + self._spat_var,
                                     size=self._num_cores)[0])
             print 'samples: ', self._samples
-        #if self._perf_dist == 'uniform':
-        #    spatial_mean = np.random.uniform(low=self._dist_mean - self._temp_var,
-        #                                     high=self._dist_mean + self._temp_var,
-        #                                     size=1)[0]
-        #    for i in range(self._num_cores):
-        #        self._samples = list(np.random.uniform(low=spatial_mean - self._spat_var,
-        #                            high=spatial_mean + self._spat_var,
-        #                            size=self._num_cores))
-        #    print 'samples: ', self._samples
 
         elif self._perf_dist == 'normal':
-            if self._temp_var:
-                spatial_mean = np.random.normal(self._dist_mean,self._temp_var,1)[0]
+            if self._temp_var != 0:
+                spatial_param = list(np.random.normal(self._dist_mean, self._temp_var, self._num_cores))
             else:
-                spatial_mean = self._dist_mean
+                spatial_param = list()
+                for i in range(self._num_cores):
+                    spatial_param.append(self._dist_mean)
 
-            if self._spat_var:
-                self._samples = list(np.random.normal(spatial_mean, self._spat_var, self._num_cores))
+            self._samples= list()
+            if self._spat_var != 0:
+                for i in range(self._num_cores):
+                    self._samples.append(np.random.normal(spatial_param[i], self._spat_var, self._num_cores)[0])
             else:
-                self._samples = [spatial_mean for _ in range(self._num_cores)]
-            
+                for i in range(self._num_cores):
+                    self._samples.append(spatial_param[i])
+
         elif self._perf_dist == 'exponential':
             scale_param = self._dist_mean
             self._samples = list(np.random.exponential(scale_param, self._num_cores))
         
         elif self._perf_dist == 'poisson':
-            scale_param = self._dist_mean
-            self._samples = list(np.random.poisson(scale_param, self._num_cores))
+            if self._temp_var != 0:
+                spatial_param = list(np.random.poisson(self._dist_mean, self._num_cores))
+            else:
+                spatial_param = list()
+                for i in range(self._num_cores):
+                    spatial_param.append(self._dist_mean)
+
+            self._samples = list()
+            if self._spat_var != 0:
+                for i in range(self._num_cores):
+                    self._samples.append(np.random.poisson(spatial_param[i], self._num_cores)[0])
+            else:
+                for i in range(self._num_cores):
+                    self._samples.append(spatial_param[i])
+
 
         # Create N execution units with the selected samples
         if not self._core_list:
